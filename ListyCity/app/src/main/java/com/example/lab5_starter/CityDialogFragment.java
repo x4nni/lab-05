@@ -17,6 +17,7 @@ public class CityDialogFragment extends DialogFragment {
     interface CityDialogListener {
         void updateCity(City city, String title, String year);
         void addCity(City city);
+        void deleteCity(City city);
     }
     private CityDialogListener listener;
 
@@ -56,24 +57,45 @@ public class CityDialogFragment extends DialogFragment {
             assert city != null;
             editMovieName.setText(city.getName());
             editMovieYear.setText(city.getProvince());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            return builder
+                    .setView(view)
+                    .setTitle("City Details")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Continue", (dialog, which) -> {
+                        String title = editMovieName.getText().toString();
+                        String year = editMovieYear.getText().toString();
+                        if (Objects.equals(tag, "City Details")) {
+                            listener.updateCity(city, title, year);
+                        } else {
+                            listener.addCity(new City(title, year));
+                        }
+                    })
+                    .setNeutralButton("Delete", (dialog,which) -> {
+                        if (Objects.equals(tag, "City Details")) {
+                            listener.deleteCity(city);
+                        }
+                    })
+                    .create();
         }
         else {
-            city = null;}
+            city = null;
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            return builder
+                    .setView(view)
+                    .setTitle("City Details")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Continue", (dialog, which) -> {
+                        String title = editMovieName.getText().toString();
+                        String year = editMovieYear.getText().toString();
+                        if (Objects.equals(tag, "City Details")) {
+                            listener.updateCity(city, title, year);
+                        } else {
+                            listener.addCity(new City(title, year));
+                        }
+                    })
+                    .create();}
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        return builder
-                .setView(view)
-                .setTitle("City Details")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Continue", (dialog, which) -> {
-                    String title = editMovieName.getText().toString();
-                    String year = editMovieYear.getText().toString();
-                    if (Objects.equals(tag, "City Details")) {
-                        listener.updateCity(city, title, year);
-                    } else {
-                        listener.addCity(new City(title, year));
-                    }
-                })
-                .create();
+
     }
 }
